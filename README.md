@@ -1,75 +1,37 @@
-# Nuxt Minimal Starter
+# Realty Frontend
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Nuxt 3 frontend for real estate transaction management.
 
-## Setup
+## Live URL
+https://realty-frontend-gamma.vercel.app
 
-Make sure to install dependencies:
+## Tech Stack
+- Nuxt 3
+- Pinia
+- Tailwind CSS
+
+## Installation
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+## Environment Variables
 
-Start the development server on `http://localhost:3000`:
+Create a `.env` file:
+
+```env
+NUXT_PUBLIC_API_BASE=http://localhost:3001
+```
+
+## Running
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+## Pages
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- `/` — Dashboard
+- `/transactions/new` — Create transaction
+- `/transactions/[id]` — Transaction detail
