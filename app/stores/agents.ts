@@ -1,4 +1,3 @@
-import { useRuntimeConfig } from 'nuxt/app'
 import { defineStore } from 'pinia'
 
 export const useAgentsStore = defineStore('agents', {
@@ -8,12 +7,18 @@ export const useAgentsStore = defineStore('agents', {
     error: null as string | null,
   }),
   actions: {
+    getHeaders() {
+      const token = import.meta.client ? localStorage.getItem('token') : null
+      return token ? { Authorization: `Bearer ${token}` } : {}
+    },
     async fetchAgents() {
       const config = useRuntimeConfig()
       this.loading = true
       this.error = null
       try {
-        const data = await $fetch(`${config.public.apiBase}/agents`)
+        const data = await $fetch(`${config.public.apiBase}/agents`, {
+          headers: this.getHeaders(),
+        })
         this.agents = data as any[]
       } catch (e) {
         this.error = 'Ajanlar yüklenemedi'
@@ -26,6 +31,7 @@ export const useAgentsStore = defineStore('agents', {
       const data = await $fetch(`${config.public.apiBase}/agents`, {
         method: 'POST',
         body: payload,
+        headers: this.getHeaders(),
       })
       this.agents.push(data)
       return data

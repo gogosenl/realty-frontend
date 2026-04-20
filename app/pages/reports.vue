@@ -118,12 +118,21 @@ const loading = ref(false)
 const summary = ref(null)
 const earnings = ref([])
 
+const getHeaders = () => {
+  const token = import.meta.client ? localStorage.getItem('token') : null
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
 onMounted(async () => {
   loading.value = true
   try {
     await transactionsStore.fetchTransactions()
-    summary.value = await $fetch(`${config.public.apiBase}/transactions/summary/financial`)
-    earnings.value = await $fetch(`${config.public.apiBase}/transactions/summary/agent-earnings`)
+    summary.value = await $fetch(`${config.public.apiBase}/transactions/summary/financial`, {
+      headers: getHeaders(),
+    })
+    earnings.value = await $fetch(`${config.public.apiBase}/transactions/summary/agent-earnings`, {
+      headers: getHeaders(),
+    })
   } catch (e) {
     console.error(e)
   } finally {

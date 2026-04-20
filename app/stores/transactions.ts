@@ -1,4 +1,3 @@
-import { useRuntimeConfig } from 'nuxt/app'
 import { defineStore } from 'pinia'
 
 export const useTransactionsStore = defineStore('transactions', {
@@ -9,12 +8,18 @@ export const useTransactionsStore = defineStore('transactions', {
     error: null as string | null,
   }),
   actions: {
+    getHeaders() {
+      const token = import.meta.client ? localStorage.getItem('token') : null
+      return token ? { Authorization: `Bearer ${token}` } : {}
+    },
     async fetchTransactions() {
       const config = useRuntimeConfig()
       this.loading = true
       this.error = null
       try {
-        const data = await $fetch(`${config.public.apiBase}/transactions`)
+        const data = await $fetch(`${config.public.apiBase}/transactions`, {
+          headers: this.getHeaders(),
+        })
         this.transactions = data as any[]
       } catch (e) {
         this.error = 'İşlemler yüklenemedi'
@@ -26,7 +31,9 @@ export const useTransactionsStore = defineStore('transactions', {
       const config = useRuntimeConfig()
       this.loading = true
       try {
-        const data = await $fetch(`${config.public.apiBase}/transactions/${id}`)
+        const data = await $fetch(`${config.public.apiBase}/transactions/${id}`, {
+          headers: this.getHeaders(),
+        })
         this.currentTransaction = data
       } catch (e) {
         this.error = 'İşlem bulunamadı'
@@ -39,6 +46,7 @@ export const useTransactionsStore = defineStore('transactions', {
       const data = await $fetch(`${config.public.apiBase}/transactions`, {
         method: 'POST',
         body: payload,
+        headers: this.getHeaders(),
       })
       this.transactions.push(data)
       return data
@@ -48,6 +56,7 @@ export const useTransactionsStore = defineStore('transactions', {
       const data = await $fetch(`${config.public.apiBase}/transactions/${id}/stage`, {
         method: 'PATCH',
         body: { stage },
+        headers: this.getHeaders(),
       })
       const index = this.transactions.findIndex((t) => t._id === id)
       if (index !== -1) this.transactions[index] = data

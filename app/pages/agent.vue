@@ -112,11 +112,18 @@ const earnings = ref([])
 
 const newAgent = reactive({ name: '', email: '', phone: '' })
 
+const getHeaders = () => {
+  const token = import.meta.client ? localStorage.getItem('token') : null
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
 onMounted(async () => {
   loading.value = true
   await agentsStore.fetchAgents()
   try {
-    earnings.value = await $fetch(`${config.public.apiBase}/transactions/summary/agent-earnings`)
+    earnings.value = await $fetch(`${config.public.apiBase}/transactions/summary/agent-earnings`, {
+      headers: getHeaders(),
+    })
   } catch (e) {
     earnings.value = []
   }
@@ -138,7 +145,9 @@ const handleCreateAgent = async () => {
     newAgent.email = ''
     newAgent.phone = ''
     showForm.value = false
-    earnings.value = await $fetch(`${config.public.apiBase}/transactions/summary/agent-earnings`)
+    earnings.value = await $fetch(`${config.public.apiBase}/transactions/summary/agent-earnings`, {
+      headers: getHeaders(),
+    })
   } catch (e) {
     alert('Ajan oluşturulamadı.')
   } finally {
