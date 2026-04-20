@@ -3,7 +3,7 @@
 <nav class="bg-white shadow px-6 py-4 flex items-center justify-between">
   <h1 class="text-xl font-semibold text-gray-800">Realty Manager</h1>
   <div class="flex items-center gap-3">
-    <NuxtLink to="/agents" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
+    <NuxtLink to="/agent" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
       Ajanlar
     </NuxtLink>
     <NuxtLink to="/reports" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
