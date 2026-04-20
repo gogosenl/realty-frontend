@@ -1,19 +1,28 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-<nav class="bg-white shadow px-6 py-4 flex items-center justify-between">
-  <h1 class="text-xl font-semibold text-gray-800">Realty Manager</h1>
-  <div class="flex items-center gap-3">
-    <NuxtLink to="/agent" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
-      Ajanlar
-    </NuxtLink>
-    <NuxtLink to="/reports" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
-      Finans Raporu
-    </NuxtLink>
-    <NuxtLink to="/transactions/new" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
-      + Yeni İşlem
-    </NuxtLink>
-  </div>
-</nav>
+    <nav class="bg-white shadow px-6 py-4 flex items-center justify-between">
+      <h1 class="text-xl font-semibold text-gray-800">Realty Manager</h1>
+      <div class="flex items-center gap-3">
+        <NuxtLink to="/agents" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
+          Ajanlar
+        </NuxtLink>
+        <NuxtLink to="/reports" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
+          Finans Raporu
+        </NuxtLink>
+        <NuxtLink to="/transactions/new" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
+          + Yeni İşlem
+        </NuxtLink>
+        <div class="flex items-center gap-2 ml-2 pl-2 border-l border-gray-200">
+          <span v-if="authStore.user" class="text-sm text-gray-600">{{ authStore.user.name }}</span>
+          <button
+            @click="handleLogout"
+            class="text-sm text-red-500 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50"
+          >
+            Çıkış
+          </button>
+        </div>
+      </div>
+    </nav>
 
     <div class="max-w-6xl mx-auto px-6 py-8">
       <div class="grid grid-cols-4 gap-4 mb-8">
@@ -58,8 +67,21 @@
 </template>
 
 <script setup>
+definePageMeta({ middleware: 'auth' })
+
+const router = useRouter()
 const store = useTransactionsStore()
-onMounted(() => store.fetchTransactions())
+const authStore = useAuthStore()
+
+onMounted(() => {
+  authStore.loadFromStorage()
+  store.fetchTransactions()
+})
+
+const handleLogout = () => {
+  authStore.logout()
+  router.push('/login')
+}
 
 const stages = [
   { key: 'agreement', label: 'Anlaşma' },
