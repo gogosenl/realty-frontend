@@ -1,11 +1,19 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <nav class="bg-white shadow px-6 py-4 flex items-center justify-between">
-      <h1 class="text-xl font-semibold text-gray-800">Realty Manager</h1>
-      <NuxtLink to="/transactions/new" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
-        + Yeni İşlem
-      </NuxtLink>
-    </nav>
+<nav class="bg-white shadow px-6 py-4 flex items-center justify-between">
+  <h1 class="text-xl font-semibold text-gray-800">Realty Manager</h1>
+  <div class="flex items-center gap-3">
+    <NuxtLink to="/agents" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
+      Ajanlar
+    </NuxtLink>
+    <NuxtLink to="/reports" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
+      Finans Raporu
+    </NuxtLink>
+    <NuxtLink to="/transactions/new" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
+      + Yeni İşlem
+    </NuxtLink>
+  </div>
+</nav>
 
     <div class="max-w-6xl mx-auto px-6 py-8">
       <div class="grid grid-cols-4 gap-4 mb-8">

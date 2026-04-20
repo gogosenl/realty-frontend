@@ -9,6 +9,7 @@
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <form @submit.prevent="handleSubmit">
           <div class="space-y-4">
+
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Mülk Adresi</label>
               <input
@@ -20,26 +21,82 @@
               />
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Satış Fiyatı (₺)</label>
-                <input
-                  v-model.number="form.salePrice"
-                  type="number"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="2000000"
-                  required
-                />
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Satış Fiyatı (₺)</label>
+              <input
+                v-model.number="form.salePrice"
+                type="number"
+                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="2000000"
+                required
+                @input="recalculateFee"
+              />
+            </div>
+
+            <!-- Komisyon Tipi Seçimi -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Komisyon Tipi</label>
+              <div class="flex gap-3">
+                <button
+                  type="button"
+                  @click="commissionType = 'tl'"
+                  :class="[
+                    'flex-1 py-2 rounded-lg text-sm font-medium border transition-all',
+                    commissionType === 'tl'
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300'
+                  ]"
+                >
+                  ₺ Tutar Olarak
+                </button>
+                <button
+                  type="button"
+                  @click="commissionType = 'percent'"
+                  :class="[
+                    'flex-1 py-2 rounded-lg text-sm font-medium border transition-all',
+                    commissionType === 'percent'
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300'
+                  ]"
+                >
+                  % Yüzde Olarak
+                </button>
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Toplam Komisyon (₺)</label>
-                <input
-                  v-model.number="form.totalServiceFee"
-                  type="number"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="60000"
-                  required
-                />
+            </div>
+
+            <!-- TL Komisyon -->
+            <div v-if="commissionType === 'tl'">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Toplam Komisyon (₺)</label>
+              <input
+                v-model.number="form.totalServiceFee"
+                type="number"
+                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="60000"
+                required
+              />
+            </div>
+
+            <!-- Yüzde Komisyon -->
+            <div v-if="commissionType === 'percent'">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Komisyon Oranı (%)</label>
+              <input
+                v-model.number="commissionPercent"
+                type="number"
+                step="0.1"
+                min="0"
+                max="100"
+                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="3"
+                @input="recalculateFee"
+              />
+              <div v-if="form.salePrice && commissionPercent" class="mt-2 p-3 bg-blue-50 rounded-lg">
+                <p class="text-sm text-blue-700">
+                  Hesaplanan Komisyon:
+                  <span class="font-semibold">{{ formatCurrency(form.totalServiceFee) }}</span>
+                </p>
+                <p class="text-xs text-blue-500 mt-1">
+                  {{ formatCurrency(form.salePrice) }} × %{{ commissionPercent }} = {{ formatCurrency(form.totalServiceFee) }}
+                </p>
               </div>
             </div>
 
@@ -82,15 +139,16 @@
               />
             </div>
 
-            <div v-if="error" class="text-red-500 text-sm">{{ error }}</div>
+            <div v-if="error" class="text-red-500 text-sm bg-red-50 p-3 rounded-lg">{{ error }}</div>
 
             <button
               type="submit"
-              :disabled="loading"
+              :disabled="loading || !form.totalServiceFee"
               class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
             >
               {{ loading ? 'Kaydediliyor...' : 'İşlem Oluştur' }}
             </button>
+
           </div>
         </form>
       </div>
@@ -105,6 +163,9 @@ const transactionsStore = useTransactionsStore()
 
 onMounted(() => agentsStore.fetchAgents())
 
+const commissionType = ref('tl')
+const commissionPercent = ref(null)
+
 const form = reactive({
   propertyAddress: '',
   salePrice: null,
@@ -113,6 +174,20 @@ const form = reactive({
   sellingAgent: '',
   notes: '',
 })
+
+const recalculateFee = () => {
+  if (commissionType.value === 'percent' && form.salePrice && commissionPercent.value) {
+    form.totalServiceFee = Math.round(form.salePrice * commissionPercent.value / 100)
+  }
+}
+
+watch(commissionType, () => {
+  form.totalServiceFee = null
+  commissionPercent.value = null
+})
+
+const formatCurrency = (val) =>
+  val ? new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(val) : '₺0'
 
 const loading = ref(false)
 const error = ref(null)
