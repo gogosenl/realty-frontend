@@ -37,6 +37,10 @@
           {{ loading ? 'Giriş yapılıyor...' : 'Giriş Yap' }}
         </button>
       </form>
+      <p class="text-center text-sm text-gray-500 mt-4">
+  Hesabınız yok mu?
+  <NuxtLink to="/register" class="text-blue-600 hover:underline">Kayıt olun</NuxtLink>
+</p>
     </div>
   </div>
 </template>
