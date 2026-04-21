@@ -24,12 +24,7 @@
           Sil
         </button>
       </div>
-      <NuxtLink
-        to="/invites"
-        class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100"
-      >
-        Davetler
-      </NuxtLink>
+
     </nav>
 
     <div v-if="store.loading" class="p-8 text-center text-gray-400">
