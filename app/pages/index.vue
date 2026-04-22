@@ -1,68 +1,71 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <nav class="bg-white shadow px-6 py-4 flex items-center justify-between">
-      <h1 class="text-xl font-semibold text-gray-800">Realty Manager</h1>
-      <div class="flex items-center gap-3">
-        <template v-if="authStore.user?.role === 'admin'">
-          <NuxtLink to="/agents" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
-            Ajanlar
-          </NuxtLink>
-          <NuxtLink to="/reports" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
-            Finans Raporu
-          </NuxtLink>
-          <NuxtLink to="/invites" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
-            Davetler
-          </NuxtLink>
-          <NuxtLink to="/users" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
-            Kullanıcılar
-          </NuxtLink>
-        </template>
-        <NuxtLink to="/transactions/new" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
-          + Yeni İşlem
+<nav class="bg-white shadow px-6 py-4 flex items-center justify-between">
+  <h1 class="text-xl font-semibold text-gray-800">Realty Manager</h1>
+  <div class="flex items-center gap-3">
+    <ClientOnly>
+      <template v-if="authStore.user?.role === 'admin'">
+        <NuxtLink to="/agents" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
+          Ajanlar
         </NuxtLink>
-        <div class="flex items-center gap-2 ml-2 pl-2 border-l border-gray-200">
-          <span v-if="authStore.user" class="text-sm text-gray-600">{{ authStore.user.name }}</span>
-          <span v-if="authStore.user" :class="authStore.user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'" class="text-xs px-2 py-1 rounded-full font-medium">
-            {{ authStore.user.role === 'admin' ? 'Admin' : 'Ajan' }}
-          </span>
-          <button
-            @click="handleLogout"
-            class="text-sm text-red-500 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50"
-          >
-            Çıkış
-          </button>
-        </div>
+        <NuxtLink to="/reports" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
+          Finans Raporu
+        </NuxtLink>
+        <NuxtLink to="/users" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-100">
+          Kullanıcı Yönetimi
+        </NuxtLink>
+      </template>
+    </ClientOnly>
+    <NuxtLink to="/transactions/new" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
+      + Yeni İşlem
+    </NuxtLink>
+    <ClientOnly>
+      <div class="flex items-center gap-2 ml-2 pl-2 border-l border-gray-200">
+        <span v-if="authStore.user" class="text-sm text-gray-600">{{ authStore.user.name }}</span>
+        <span v-if="authStore.user" :class="authStore.user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'" class="text-xs px-2 py-1 rounded-full font-medium">
+          {{ authStore.user.role === 'admin' ? 'Admin' : 'Ajan' }}
+        </span>
+        <button
+          @click="handleLogout"
+          class="text-sm text-red-500 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50"
+        >
+          Çıkış
+        </button>
       </div>
-    </nav>
+    </ClientOnly>
+  </div>
+</nav>
 
     <div class="max-w-6xl mx-auto px-6 py-8">
 
-      <!-- Agent Özet Kartı -->
-      <div v-if="authStore.user?.role === 'agent'" class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
-        <h2 class="font-semibold text-gray-700 mb-4">Kazanç Özetim</h2>
-        <div class="grid grid-cols-3 gap-4">
-          <div>
-            <p class="text-xs text-gray-400">Toplam İşlem</p>
-            <p class="text-2xl font-bold text-gray-800 mt-1">{{ store.transactions.length }}</p>
-          </div>
-          <div>
-            <p class="text-xs text-gray-400">Tamamlanan</p>
-            <p class="text-2xl font-bold text-green-600 mt-1">{{ completedCount }}</p>
-          </div>
-          <div>
-            <p class="text-xs text-gray-400">Toplam Kazanç</p>
-            <p class="text-2xl font-bold text-blue-600 mt-1">{{ formatCurrency(totalEarnings) }}</p>
-          </div>
-        </div>
+<ClientOnly>
+  <!-- Agent Özet Kartı -->
+  <div v-if="authStore.user?.role === 'agent'" class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+    <h2 class="font-semibold text-gray-700 mb-4">Kazanç Özetim</h2>
+    <div class="grid grid-cols-3 gap-4">
+      <div>
+        <p class="text-xs text-gray-400">Toplam İşlem</p>
+        <p class="text-2xl font-bold text-gray-800 mt-1">{{ store.transactions.length }}</p>
       </div>
+      <div>
+        <p class="text-xs text-gray-400">Tamamlanan</p>
+        <p class="text-2xl font-bold text-green-600 mt-1">{{ completedCount }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-400">Toplam Kazanç</p>
+        <p class="text-2xl font-bold text-blue-600 mt-1">{{ formatCurrency(totalEarnings) }}</p>
+      </div>
+    </div>
+  </div>
 
-      <!-- Admin Stage Kartları -->
-      <div v-if="authStore.user?.role === 'admin'" class="grid grid-cols-4 gap-4 mb-8">
-        <div v-for="stage in stages" :key="stage.key" class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-          <p class="text-sm text-gray-500">{{ stage.label }}</p>
-          <p class="text-2xl font-bold text-gray-800 mt-1">{{ countByStage(stage.key) }}</p>
-        </div>
-      </div>
+  <!-- Admin Stage Kartları -->
+  <div v-if="authStore.user?.role === 'admin'" class="grid grid-cols-4 gap-4 mb-8">
+    <div v-for="stage in stages" :key="stage.key" class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+      <p class="text-sm text-gray-500">{{ stage.label }}</p>
+      <p class="text-2xl font-bold text-gray-800 mt-1">{{ countByStage(stage.key) }}</p>
+    </div>
+  </div>
+</ClientOnly>
 
       <div class="bg-white rounded-xl shadow-sm border border-gray-100">
         <div class="px-6 py-4 border-b border-gray-100">
