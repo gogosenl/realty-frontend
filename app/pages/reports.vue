@@ -22,17 +22,17 @@
           <p class="text-3xl font-bold text-blue-600 mt-1">{{ formatCurrency(summary.agencyRevenue) }}</p>
         </div>
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <p class="text-sm text-gray-500">Toplam Ajan Ödemesi (%50)</p>
+          <p class="text-sm text-gray-500">Toplam Emlak Danışman Ödemesi (%50)</p>
           <p class="text-3xl font-bold text-green-600 mt-1">{{ formatCurrency(summary.agentRevenue) }}</p>
         </div>
       </div>
 
       <div v-if="loading" class="p-8 text-center text-gray-400">Yükleniyor...</div>
 
-      <!-- Ajan Bazlı Kazanç -->
+      <!-- Emlak Danışmanı Bazlı Kazanç -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100">
         <div class="px-6 py-4 border-b border-gray-100">
-          <h2 class="font-semibold text-gray-700">Ajan Bazlı Kazanç</h2>
+          <h2 class="font-semibold text-gray-700">Emlak Danışmanı Bazlı Kazanç</h2>
         </div>
 
         <div v-if="earnings.length === 0" class="p-8 text-center text-gray-400">

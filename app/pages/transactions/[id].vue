@@ -64,13 +64,13 @@
             </p>
           </div>
           <div>
-            <p class="text-xs text-gray-400">Listeleyen Ajan</p>
+            <p class="text-xs text-gray-400">Listeleyen Emlak Danışmanı</p>
             <p class="font-semibold text-gray-800">
               {{ txn.listingAgent?.name }}
             </p>
           </div>
           <div>
-            <p class="text-xs text-gray-400">Satan Ajan</p>
+            <p class="text-xs text-gray-400">Satan Emlak Danışmanı</p>
             <p class="font-semibold text-gray-800">
               {{ txn.sellingAgent?.name }}
             </p>

@@ -1,7 +1,9 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <nav class="bg-white shadow px-6 py-4 flex items-center gap-4">
-      <NuxtLink to="/" class="text-gray-500 hover:text-gray-700">← Geri</NuxtLink>
+      <NuxtLink to="/" class="text-gray-500 hover:text-gray-700"
+        >← Geri</NuxtLink
+      >
       <h1 class="text-xl font-semibold text-gray-800">Yeni İşlem</h1>
     </nav>
 
@@ -9,9 +11,26 @@
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <form @submit.prevent="handleSubmit">
           <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >İl</label
+              >
+              <select
+                v-model="form.city"
+                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seçin...</option>
+                <option v-for="city in cities" :key="city" :value="city">
+                  {{ city }}
+                </option>
+              </select>
+            </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Mülk Adresi</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Mülk Adresi</label
+              >
               <input
                 v-model="form.propertyAddress"
                 type="text"
@@ -22,7 +41,9 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Satış Fiyatı (₺)</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Satış Fiyatı (₺)</label
+              >
               <input
                 v-model.number="form.salePrice"
                 type="number"
@@ -35,7 +56,9 @@
 
             <!-- Komisyon Tipi Seçimi -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Komisyon Tipi</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Komisyon Tipi</label
+              >
               <div class="flex gap-3">
                 <button
                   type="button"
@@ -44,7 +67,7 @@
                     'flex-1 py-2 rounded-lg text-sm font-medium border transition-all',
                     commissionType === 'tl'
                       ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300'
+                      : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300',
                   ]"
                 >
                   ₺ Tutar Olarak
@@ -56,7 +79,7 @@
                     'flex-1 py-2 rounded-lg text-sm font-medium border transition-all',
                     commissionType === 'percent'
                       ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300'
+                      : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300',
                   ]"
                 >
                   % Yüzde Olarak
@@ -66,7 +89,9 @@
 
             <!-- TL Komisyon -->
             <div v-if="commissionType === 'tl'">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Toplam Komisyon (₺)</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Toplam Komisyon (₺)</label
+              >
               <input
                 v-model.number="form.totalServiceFee"
                 type="number"
@@ -78,7 +103,9 @@
 
             <!-- Yüzde Komisyon -->
             <div v-if="commissionType === 'percent'">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Komisyon Oranı (%)</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Komisyon Oranı (%)</label
+              >
               <input
                 v-model.number="commissionPercent"
                 type="number"
@@ -89,40 +116,60 @@
                 placeholder="3"
                 @input="recalculateFee"
               />
-              <div v-if="form.salePrice && commissionPercent" class="mt-2 p-3 bg-blue-50 rounded-lg">
+              <div
+                v-if="form.salePrice && commissionPercent"
+                class="mt-2 p-3 bg-blue-50 rounded-lg"
+              >
                 <p class="text-sm text-blue-700">
                   Hesaplanan Komisyon:
-                  <span class="font-semibold">{{ formatCurrency(form.totalServiceFee) }}</span>
+                  <span class="font-semibold">{{
+                    formatCurrency(form.totalServiceFee)
+                  }}</span>
                 </p>
                 <p class="text-xs text-blue-500 mt-1">
-                  {{ formatCurrency(form.salePrice) }} × %{{ commissionPercent }} = {{ formatCurrency(form.totalServiceFee) }}
+                  {{ formatCurrency(form.salePrice) }} × %{{
+                    commissionPercent
+                  }}
+                  = {{ formatCurrency(form.totalServiceFee) }}
                 </p>
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Listeleyen Ajan</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Listeleyen Emlak Danışmanı</label
+                >
                 <select
                   v-model="form.listingAgent"
                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 >
                   <option value="">Seçin...</option>
-                  <option v-for="agent in agentsStore.agents" :key="agent._id" :value="agent._id">
+                  <option
+                    v-for="agent in agentsStore.agents"
+                    :key="agent._id"
+                    :value="agent._id"
+                  >
                     {{ agent.name }}
                   </option>
                 </select>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Satan Ajan</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Satan Emlak Danışmanı</label
+                >
                 <select
                   v-model="form.sellingAgent"
                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 >
                   <option value="">Seçin...</option>
-                  <option v-for="agent in agentsStore.agents" :key="agent._id" :value="agent._id">
+                  <option
+                    v-for="agent in agentsStore.agents"
+                    :key="agent._id"
+                    :value="agent._id"
+                  >
                     {{ agent.name }}
                   </option>
                 </select>
@@ -130,7 +177,9 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Notlar</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Notlar</label
+              >
               <textarea
                 v-model="form.notes"
                 rows="3"
@@ -139,16 +188,20 @@
               />
             </div>
 
-            <div v-if="error" class="text-red-500 text-sm bg-red-50 p-3 rounded-lg">{{ error }}</div>
+            <div
+              v-if="error"
+              class="text-red-500 text-sm bg-red-50 p-3 rounded-lg"
+            >
+              {{ error }}
+            </div>
 
             <button
               type="submit"
               :disabled="loading || !form.totalServiceFee"
               class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
             >
-              {{ loading ? 'Kaydediliyor...' : 'İşlem Oluştur' }}
+              {{ loading ? "Kaydediliyor..." : "İşlem Oluştur" }}
             </button>
-
           </div>
         </form>
       </div>
@@ -157,51 +210,146 @@
 </template>
 
 <script setup>
-const router = useRouter()
-const agentsStore = useAgentsStore()
-const transactionsStore = useTransactionsStore()
+const router = useRouter();
+const agentsStore = useAgentsStore();
+const transactionsStore = useTransactionsStore();
+const cities = [
+  "Adana",
+  "Adıyaman",
+  "Afyonkarahisar",
+  "Ağrı",
+  "Amasya",
+  "Ankara",
+  "Antalya",
+  "Artvin",
+  "Aydın",
+  "Balıkesir",
+  "Bilecik",
+  "Bingöl",
+  "Bitlis",
+  "Bolu",
+  "Burdur",
+  "Bursa",
+  "Çanakkale",
+  "Çankırı",
+  "Çorum",
+  "Denizli",
+  "Diyarbakır",
+  "Edirne",
+  "Elazığ",
+  "Erzincan",
+  "Erzurum",
+  "Eskişehir",
+  "Gaziantep",
+  "Giresun",
+  "Gümüşhane",
+  "Hakkari",
+  "Hatay",
+  "Isparta",
+  "Mersin",
+  "İstanbul",
+  "İzmir",
+  "Kars",
+  "Kastamonu",
+  "Kayseri",
+  "Kırklareli",
+  "Kırşehir",
+  "Kocaeli",
+  "Konya",
+  "Kütahya",
+  "Malatya",
+  "Manisa",
+  "Kahramanmaraş",
+  "Mardin",
+  "Muğla",
+  "Muş",
+  "Nevşehir",
+  "Niğde",
+  "Ordu",
+  "Rize",
+  "Sakarya",
+  "Samsun",
+  "Siirt",
+  "Sinop",
+  "Sivas",
+  "Tekirdağ",
+  "Tokat",
+  "Trabzon",
+  "Tunceli",
+  "Şanlıurfa",
+  "Uşak",
+  "Van",
+  "Yozgat",
+  "Zonguldak",
+  "Aksaray",
+  "Bayburt",
+  "Karaman",
+  "Kırıkkale",
+  "Batman",
+  "Şırnak",
+  "Bartın",
+  "Ardahan",
+  "Iğdır",
+  "Yalova",
+  "Karabük",
+  "Kilis",
+  "Osmaniye",
+  "Düzce",
+];
 
-onMounted(() => agentsStore.fetchAgents())
+onMounted(() => agentsStore.fetchAgents());
 
-const commissionType = ref('tl')
-const commissionPercent = ref(null)
+const commissionType = ref("tl");
+const commissionPercent = ref(null);
 
 const form = reactive({
-  propertyAddress: '',
+  propertyAddress: "",
   salePrice: null,
   totalServiceFee: null,
-  listingAgent: '',
-  sellingAgent: '',
-  notes: '',
-})
+  listingAgent: "",
+  sellingAgent: "",
+  city: "",
+  notes: "",
+});
 
 const recalculateFee = () => {
-  if (commissionType.value === 'percent' && form.salePrice && commissionPercent.value) {
-    form.totalServiceFee = Math.round(form.salePrice * commissionPercent.value / 100)
+  if (
+    commissionType.value === "percent" &&
+    form.salePrice &&
+    commissionPercent.value
+  ) {
+    form.totalServiceFee = Math.round(
+      (form.salePrice * commissionPercent.value) / 100,
+    );
   }
-}
+};
 
 watch(commissionType, () => {
-  form.totalServiceFee = null
-  commissionPercent.value = null
-})
+  form.totalServiceFee = null;
+  commissionPercent.value = null;
+});
 
 const formatCurrency = (val) =>
-  val ? new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(val) : '₺0'
+  val
+    ? new Intl.NumberFormat("tr-TR", {
+        style: "currency",
+        currency: "TRY",
+      }).format(val)
+    : "₺0";
 
-const loading = ref(false)
-const error = ref(null)
+const loading = ref(false);
+const error = ref(null);
 
 const handleSubmit = async () => {
-  loading.value = true
-  error.value = null
+  loading.value = true;
+  error.value = null;
   try {
-    const txn = await transactionsStore.createTransaction(form)
-    router.push(`/transactions/${txn._id}`)
+    const txn = await transactionsStore.createTransaction(form);
+    router.push(`/transactions/${txn._id}`);
   } catch (e) {
-    error.value = 'İşlem oluşturulamadı. Bilgileri kontrol edin.'
+    error.value = "İşlem oluşturulamadı. Bilgileri kontrol edin.";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>
