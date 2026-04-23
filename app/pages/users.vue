@@ -119,7 +119,7 @@
 <script setup>
 const config = useRuntimeConfig()
 const authStore = useAuthStore()
-
+const { success, error: toastError } = useToast()
 const loading = ref(false)
 const users = ref([])
 const invites = ref([])

@@ -96,6 +96,7 @@ definePageMeta({ layout: false });
 
 const router = useRouter();
 const config = useRuntimeConfig();
+const { success, error: toastError } = useToast()
 
 const form = reactive({
   name: "",
@@ -110,20 +111,22 @@ const error = ref("");
 const success = ref("");
 
 const handleRegister = async () => {
-  loading.value = true;
-  error.value = "";
-  success.value = "";
+  loading.value = true
+  error.value = ''
+  success_msg.value = ''
   try {
     await $fetch(`${config.public.apiBase}/auth/register`, {
-      method: "POST",
+      method: 'POST',
       body: form,
-    });
-    success.value = "Kayıt başarılı! Giriş yapabilirsiniz.";
-    setTimeout(() => router.push("/login"), 2000);
+    })
+    success('Kayıt başarılı! Giriş yapabilirsiniz.')
+    setTimeout(() => router.push('/login'), 2000)
   } catch (e) {
-    error.value = e?.data?.message ?? "Kayıt başarısız";
+    const msg = e?.data?.message ?? 'Kayıt başarısız'
+    toastError(Array.isArray(msg) ? msg[0] : msg)
+    error.value = Array.isArray(msg) ? msg[0] : msg
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>

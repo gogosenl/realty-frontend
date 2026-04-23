@@ -274,6 +274,8 @@ const route = useRoute();
 const router = useRouter();
 const store = useTransactionsStore();
 const agentsStore = useAgentsStore();
+const { success, error: toastError } = useToast()
+definePageMeta({ ssr: false })
 
 onMounted(() => {
   store.fetchTransaction(route.params.id);
@@ -311,39 +313,38 @@ const getHeaders = () => {
 const config = useRuntimeConfig();
 
 const handleEdit = async () => {
-  editLoading.value = true;
+  editLoading.value = true
   try {
-    const data = await $fetch(
-      `${config.public.apiBase}/transactions/${route.params.id}`,
-      {
-        method: "PATCH",
-        body: editForm,
-        headers: getHeaders(),
-      },
-    );
-    store.currentTransaction = data;
-    showEditModal.value = false;
+    const data = await $fetch(`${config.public.apiBase}/transactions/${route.params.id}`, {
+      method: 'PATCH',
+      body: editForm,
+      headers: getHeaders(),
+    })
+    store.currentTransaction = data
+    showEditModal.value = false
+    success('İşlem başarıyla güncellendi')
   } catch (e) {
-    alert("Düzenleme başarısız.");
+    toastError('Düzenleme başarısız')
   } finally {
-    editLoading.value = false;
+    editLoading.value = false
   }
-};
+}
 
 const handleDelete = async () => {
-  deleteLoading.value = true;
+  deleteLoading.value = true
   try {
     await $fetch(`${config.public.apiBase}/transactions/${route.params.id}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: getHeaders(),
-    });
-    router.push("/");
+    })
+    success('İşlem silindi')
+    router.push('/')
   } catch (e) {
-    alert("Silme başarısız.");
+    toastError('Silme başarısız')
   } finally {
-    deleteLoading.value = false;
+    deleteLoading.value = false
   }
-};
+}
 
 const stages = [
   { key: "agreement", label: "Anlaşma" },
@@ -362,16 +363,19 @@ const nextStageLabel = computed(() => {
 const stageLoading = ref(false);
 
 const handleNextStage = async () => {
-  const idx = stageIndex(txn.value.stage);
-  const nextStage = stages[idx + 1]?.key;
-  if (!nextStage) return;
-  stageLoading.value = true;
+  const idx = stageIndex(txn.value.stage)
+  const nextStage = stages[idx + 1]?.key
+  if (!nextStage) return
+  stageLoading.value = true
   try {
-    await store.updateStage(route.params.id, nextStage);
+    await store.updateStage(route.params.id, nextStage)
+    success(`${nextStageLabel.value} aşamasına geçildi`)
+  } catch (e) {
+    toastError('Aşama güncellenemedi')
   } finally {
-    stageLoading.value = false;
+    stageLoading.value = false
   }
-};
+}
 
 const formatCurrency = (val) =>
   new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(

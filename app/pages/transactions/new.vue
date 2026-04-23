@@ -213,6 +213,7 @@
 const router = useRouter();
 const agentsStore = useAgentsStore();
 const transactionsStore = useTransactionsStore();
+const { success, error: toastError } = useToast()
 const cities = [
   "Adana",
   "Adıyaman",
@@ -341,15 +342,17 @@ const loading = ref(false);
 const error = ref(null);
 
 const handleSubmit = async () => {
-  loading.value = true;
-  error.value = null;
+  loading.value = true
+  error.value = null
   try {
-    const txn = await transactionsStore.createTransaction(form);
-    router.push(`/transactions/${txn._id}`);
+    const txn = await transactionsStore.createTransaction(form)
+    success('İşlem başarıyla oluşturuldu')
+    router.push(`/transactions/${txn._id}`)
   } catch (e) {
-    error.value = "İşlem oluşturulamadı. Bilgileri kontrol edin.";
+    toastError('İşlem oluşturulamadı. Bilgileri kontrol edin.')
+    error.value = 'İşlem oluşturulamadı. Bilgileri kontrol edin.'
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>
