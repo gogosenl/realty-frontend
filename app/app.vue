@@ -1,6 +1,8 @@
 <template>
   <div>
     <NuxtPage />
-    <ToastContainer />
+    <ClientOnly>
+      <ToastContainer />
+    </ClientOnly>
   </div>
 </template>
