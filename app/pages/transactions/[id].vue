@@ -53,6 +53,10 @@
             {{ stageLabel(txn.stage) }}
           </span>
         </div>
+        <div v-if="txn.createdBy" class="col-span-2">
+          <p class="text-xs text-gray-400">Oluşturan</p>
+          <p class="font-semibold text-gray-800">{{ txn.createdBy?.name }}</p>
+        </div>
         <div class="grid grid-cols-2 gap-4 mt-4">
           <div>
             <p class="text-xs text-gray-400">Satış Fiyatı</p>
@@ -178,7 +182,7 @@
       v-if="showEditModal"
       class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
     >
-      <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-lg mx-4">
+      <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-lg mx-4">
         <h2 class="font-semibold text-gray-800 mb-4">İşlemi Düzenle</h2>
         <div class="space-y-4">
           <div>
@@ -188,7 +192,7 @@
             <input
               v-model="editForm.propertyAddress"
               type="text"
-              class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
           <div class="grid grid-cols-2 gap-4">
@@ -199,7 +203,7 @@
               <input
                 v-model.number="editForm.salePrice"
                 type="number"
-                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
             <div>
@@ -209,7 +213,7 @@
               <input
                 v-model.number="editForm.totalServiceFee"
                 type="number"
-                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
           </div>
@@ -220,7 +224,7 @@
             <textarea
               v-model="editForm.notes"
               rows="3"
-              class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
         </div>
@@ -238,8 +242,21 @@
           >
             İptal
           </button>
+        </div>
+      </div>
+    </div>
 
-          <!-- Silme Modalı butonları -->
+    <!-- Silme Onay Modalı -->
+    <div
+      v-if="showDeleteModal"
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md mx-4">
+        <h2 class="font-semibold text-gray-800 mb-2">İşlemi Sil</h2>
+        <p class="text-sm text-gray-500 mb-6">
+          Bu işlemi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+        </p>
+        <div class="flex gap-3">
           <button
             @click="handleDelete"
             :disabled="deleteLoading"
