@@ -1,11 +1,15 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <nav class="bg-white shadow px-6 py-4 flex items-center justify-between">
+    <nav
+      class="bg-green-700 px-6 py-4 flex items-center justify-between shadow-lg"
+    >
       <div class="flex items-center gap-4">
-        <NuxtLink to="/" class="text-gray-500 hover:text-gray-700"
+        <NuxtLink
+          to="/"
+          class="text-green-200 hover:text-white transition-colors"
           >← Geri</NuxtLink
         >
-        <h1 class="text-xl font-semibold text-gray-800">İşlem Detayı</h1>
+        <h1 class="text-xl font-semibold text-white">İşlem Detayı</h1>
       </div>
       <div
         v-if="txn && txn.stage !== 'completed'"
@@ -13,18 +17,17 @@
       >
         <button
           @click="showEditModal = true"
-          class="text-sm text-blue-600 hover:text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-50 border border-blue-200"
+          class="text-sm text-white px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 transition-colors"
         >
           Düzenle
         </button>
         <button
           @click="showDeleteModal = true"
-          class="text-sm text-red-500 hover:text-red-700 px-4 py-2 rounded-lg hover:bg-red-50 border border-red-200"
+          class="text-sm text-white px-4 py-2 rounded-lg bg-red-500 hover:bg-red-400 transition-colors"
         >
           Sil
         </button>
       </div>
-
     </nav>
 
     <div v-if="store.loading" class="p-8 text-center text-gray-400">
@@ -110,7 +113,7 @@
           <button
             @click="handleNextStage"
             :disabled="stageLoading"
-            class="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+            class="bg-green-600 text-white px-6 py-2 rounded-xl text-sm font-semibold hover:bg-green-700 disabled:opacity-50 transition-colors"
           >
             {{
               stageLoading ? "İşleniyor..." : `${nextStageLabel} Aşamasına Geç`
@@ -225,13 +228,28 @@
           <button
             @click="handleEdit"
             :disabled="editLoading"
-            class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+            class="flex-1 bg-green-600 text-white py-2 rounded-xl text-sm font-semibold hover:bg-green-700 disabled:opacity-50 transition-colors"
           >
             {{ editLoading ? "Kaydediliyor..." : "Kaydet" }}
           </button>
           <button
             @click="showEditModal = false"
-            class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-lg text-sm font-medium hover:bg-gray-200"
+            class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors"
+          >
+            İptal
+          </button>
+
+          <!-- Silme Modalı butonları -->
+          <button
+            @click="handleDelete"
+            :disabled="deleteLoading"
+            class="flex-1 bg-red-500 text-white py-2 rounded-xl text-sm font-semibold hover:bg-red-600 disabled:opacity-50 transition-colors"
+          >
+            {{ deleteLoading ? "Siliniyor..." : "Evet, Sil" }}
+          </button>
+          <button
+            @click="showDeleteModal = false"
+            class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors"
           >
             İptal
           </button>
@@ -274,8 +292,8 @@ const route = useRoute();
 const router = useRouter();
 const store = useTransactionsStore();
 const agentsStore = useAgentsStore();
-const { success, error: toastError } = useToast()
-definePageMeta({ ssr: false })
+const { success, error: toastError } = useToast();
+definePageMeta({ ssr: false });
 
 onMounted(() => {
   store.fetchTransaction(route.params.id);
@@ -313,38 +331,41 @@ const getHeaders = () => {
 const config = useRuntimeConfig();
 
 const handleEdit = async () => {
-  editLoading.value = true
+  editLoading.value = true;
   try {
-    const data = await $fetch(`${config.public.apiBase}/transactions/${route.params.id}`, {
-      method: 'PATCH',
-      body: editForm,
-      headers: getHeaders(),
-    })
-    store.currentTransaction = data
-    showEditModal.value = false
-    success('İşlem başarıyla güncellendi')
+    const data = await $fetch(
+      `${config.public.apiBase}/transactions/${route.params.id}`,
+      {
+        method: "PATCH",
+        body: editForm,
+        headers: getHeaders(),
+      },
+    );
+    store.currentTransaction = data;
+    showEditModal.value = false;
+    success("İşlem başarıyla güncellendi");
   } catch (e) {
-    toastError('Düzenleme başarısız')
+    toastError("Düzenleme başarısız");
   } finally {
-    editLoading.value = false
+    editLoading.value = false;
   }
-}
+};
 
 const handleDelete = async () => {
-  deleteLoading.value = true
+  deleteLoading.value = true;
   try {
     await $fetch(`${config.public.apiBase}/transactions/${route.params.id}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: getHeaders(),
-    })
-    success('İşlem silindi')
-    router.push('/')
+    });
+    success("İşlem silindi");
+    router.push("/");
   } catch (e) {
-    toastError('Silme başarısız')
+    toastError("Silme başarısız");
   } finally {
-    deleteLoading.value = false
+    deleteLoading.value = false;
   }
-}
+};
 
 const stages = [
   { key: "agreement", label: "Anlaşma" },
@@ -356,27 +377,27 @@ const stages = [
 const stageIndex = (stage) => stages.findIndex((s) => s.key === stage);
 
 const nextStageLabel = computed(() => {
-  const idx = stageIndex(txn.value?.stage)
-  return stages[idx + 1]?.label ?? ''
-})
+  const idx = stageIndex(txn.value?.stage);
+  return stages[idx + 1]?.label ?? "";
+});
 
 const stageLoading = ref(false);
 
 const handleNextStage = async () => {
-  const idx = stageIndex(txn.value.stage)
-  const nextStage = stages[idx + 1]?.key
-  const nextLabel = stages[idx + 1]?.label
-  if (!nextStage) return
-  stageLoading.value = true
+  const idx = stageIndex(txn.value.stage);
+  const nextStage = stages[idx + 1]?.key;
+  const nextLabel = stages[idx + 1]?.label;
+  if (!nextStage) return;
+  stageLoading.value = true;
   try {
-    await store.updateStage(route.params.id, nextStage)
-    success(`${nextLabel} aşamasına geçildi`)
+    await store.updateStage(route.params.id, nextStage);
+    success(`${nextLabel} aşamasına geçildi`);
   } catch (e) {
-    toastError('Aşama güncellenemedi')
+    toastError("Aşama güncellenemedi");
   } finally {
-    stageLoading.value = false
+    stageLoading.value = false;
   }
-}
+};
 
 const formatCurrency = (val) =>
   new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(

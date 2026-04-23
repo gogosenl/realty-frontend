@@ -1,14 +1,14 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <nav class="bg-white shadow px-6 py-4 flex items-center gap-4">
-      <NuxtLink to="/" class="text-gray-500 hover:text-gray-700"
+    <nav class="bg-green-700 px-6 py-4 flex items-center gap-4 shadow-lg">
+      <NuxtLink to="/" class="text-green-200 hover:text-white transition-colors"
         >← Geri</NuxtLink
       >
-      <h1 class="text-xl font-semibold text-gray-800">Yeni İşlem</h1>
+      <h1 class="text-xl font-semibold text-white">Yeni İşlem</h1>
     </nav>
 
     <div class="max-w-2xl mx-auto px-6 py-8">
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
         <form @submit.prevent="handleSubmit">
           <div class="space-y-4">
             <div>
@@ -17,7 +17,7 @@
               >
               <select
                 v-model="form.city"
-                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 required
               >
                 <option value="">Seçin...</option>
@@ -34,7 +34,7 @@
               <input
                 v-model="form.propertyAddress"
                 type="text"
-                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 placeholder="Atatürk Cad. No:5 Karaman"
                 required
               />
@@ -47,7 +47,7 @@
               <input
                 v-model.number="form.salePrice"
                 type="number"
-                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 placeholder="2000000"
                 required
                 @input="recalculateFee"
@@ -95,7 +95,7 @@
               <input
                 v-model.number="form.totalServiceFee"
                 type="number"
-                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 placeholder="60000"
                 required
               />
@@ -112,7 +112,7 @@
                 step="0.1"
                 min="0"
                 max="100"
-                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 placeholder="3"
                 @input="recalculateFee"
               />
@@ -142,7 +142,7 @@
                 >
                 <select
                   v-model="form.listingAgent"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                   required
                 >
                   <option value="">Seçin...</option>
@@ -161,7 +161,7 @@
                 >
                 <select
                   v-model="form.sellingAgent"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                   required
                 >
                   <option value="">Seçin...</option>
@@ -198,7 +198,7 @@
             <button
               type="submit"
               :disabled="loading || !form.totalServiceFee"
-              class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+              class="w-full bg-green-600 text-white py-3 rounded-xl text-sm font-semibold hover:bg-green-700 disabled:opacity-50 transition-colors"
             >
               {{ loading ? "Kaydediliyor..." : "İşlem Oluştur" }}
             </button>
@@ -213,7 +213,7 @@
 const router = useRouter();
 const agentsStore = useAgentsStore();
 const transactionsStore = useTransactionsStore();
-const { success, error: toastError } = useToast()
+const { success, error: toastError } = useToast();
 const cities = [
   "Adana",
   "Adıyaman",
@@ -342,17 +342,17 @@ const loading = ref(false);
 const error = ref(null);
 
 const handleSubmit = async () => {
-  loading.value = true
-  error.value = null
+  loading.value = true;
+  error.value = null;
   try {
-    const txn = await transactionsStore.createTransaction(form)
-    success('İşlem başarıyla oluşturuldu')
-    router.push(`/transactions/${txn._id}`)
+    const txn = await transactionsStore.createTransaction(form);
+    success("İşlem başarıyla oluşturuldu");
+    router.push(`/transactions/${txn._id}`);
   } catch (e) {
-    toastError('İşlem oluşturulamadı. Bilgileri kontrol edin.')
-    error.value = 'İşlem oluşturulamadı. Bilgileri kontrol edin.'
+    toastError("İşlem oluşturulamadı. Bilgileri kontrol edin.");
+    error.value = "İşlem oluşturulamadı. Bilgileri kontrol edin.";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>
