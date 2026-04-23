@@ -193,8 +193,9 @@ const handleRoleChange = async (id, role) => {
     })
     const user = users.value.find((u) => u._id === id)
     if (user) user.role = role
+    success('Rol güncellendi')
   } catch (e) {
-    alert('Rol güncellenemedi')
+    toastError('Rol güncellenemedi')
   }
 }
 
@@ -206,8 +207,9 @@ const handleDeleteUser = async (id) => {
       headers: getHeaders(),
     })
     users.value = users.value.filter((u) => u._id !== id)
+    success('Kullanıcı silindi')
   } catch (e) {
-    alert('Silme başarısız')
+    toastError('Silme başarısız')
   }
 }
 

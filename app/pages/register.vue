@@ -1,16 +1,12 @@
 <template>
   <div class="min-h-screen bg-gray-50 flex items-center justify-center">
-    <div
-      class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 w-full max-w-md"
-    >
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 w-full max-w-md">
       <h1 class="text-2xl font-semibold text-gray-800 mb-2">Realty Manager</h1>
       <p class="text-sm text-gray-500 mb-6">Hesap oluşturun</p>
 
       <form @submit.prevent="handleRegister" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Ad Soyad</label
-          >
+          <label class="block text-sm font-medium text-gray-700 mb-1">Ad Soyad</label>
           <input
             v-model="form.name"
             type="text"
@@ -21,9 +17,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >E-posta</label
-          >
+          <label class="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
           <input
             v-model="form.email"
             type="text"
@@ -31,15 +25,11 @@
             placeholder="ajan@realty.com"
             required
           />
-          <p class="text-xs text-gray-400 mt-1">
-            Sadece admin tarafından davet edilen e-postalar kayıt olabilir
-          </p>
+          <p class="text-xs text-gray-400 mt-1">Sadece admin tarafından davet edilen e-postalar kayıt olabilir</p>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Şifre</label
-          >
+          <label class="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
           <input
             v-model="form.password"
             type="password"
@@ -50,9 +40,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Telefon</label
-          >
+          <label class="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
           <input
             v-model="form.phone"
             type="text"
@@ -62,29 +50,20 @@
           />
         </div>
 
-        <div v-if="error" class="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
-          {{ error }}
-        </div>
-        <div
-          v-if="success"
-          class="text-green-600 text-sm bg-green-50 p-3 rounded-lg"
-        >
-          {{ success }}
-        </div>
+        <div v-if="errorMsg" class="text-red-500 text-sm bg-red-50 p-3 rounded-lg">{{ errorMsg }}</div>
+        <div v-if="successMsg" class="text-green-600 text-sm bg-green-50 p-3 rounded-lg">{{ successMsg }}</div>
 
         <button
           type="submit"
           :disabled="loading"
           class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
         >
-          {{ loading ? "Kaydediliyor..." : "Kayıt Ol" }}
+          {{ loading ? 'Kaydediliyor...' : 'Kayıt Ol' }}
         </button>
 
         <p class="text-center text-sm text-gray-500">
           Zaten hesabınız var mı?
-          <NuxtLink to="/login" class="text-blue-600 hover:underline"
-            >Giriş yapın</NuxtLink
-          >
+          <NuxtLink to="/login" class="text-blue-600 hover:underline">Giriş yapın</NuxtLink>
         </p>
       </form>
     </div>
@@ -92,39 +71,41 @@
 </template>
 
 <script setup>
-definePageMeta({ layout: false });
+definePageMeta({ layout: false })
 
-const router = useRouter();
-const config = useRuntimeConfig();
-const { success, error: toastError } = useToast()
+const router = useRouter()
+const config = useRuntimeConfig()
+const { success: toastSuccess, error: toastError } = useToast()
 
 const form = reactive({
-  name: "",
-  email: "",
-  password: "",
+  name: '',
+  email: '',
+  password: '',
   phone: '',
-  role: "agent",
-});
+  role: 'agent',
+})
 
-const loading = ref(false);
-const error = ref("");
-const success = ref("");
+const loading = ref(false)
+const errorMsg = ref('')
+const successMsg = ref('')
 
 const handleRegister = async () => {
   loading.value = true
-  error.value = ''
-  success_msg.value = ''
+  errorMsg.value = ''
+  successMsg.value = ''
   try {
     await $fetch(`${config.public.apiBase}/auth/register`, {
       method: 'POST',
       body: form,
     })
-    success('Kayıt başarılı! Giriş yapabilirsiniz.')
+    toastSuccess('Kayıt başarılı! Giriş yapabilirsiniz.')
+    successMsg.value = 'Kayıt başarılı! Giriş yapabilirsiniz.'
     setTimeout(() => router.push('/login'), 2000)
   } catch (e) {
     const msg = e?.data?.message ?? 'Kayıt başarısız'
-    toastError(Array.isArray(msg) ? msg[0] : msg)
-    error.value = Array.isArray(msg) ? msg[0] : msg
+    const msgStr = Array.isArray(msg) ? msg[0] : msg
+    toastError(msgStr)
+    errorMsg.value = msgStr
   } finally {
     loading.value = false
   }
