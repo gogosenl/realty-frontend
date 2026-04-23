@@ -356,20 +356,21 @@ const stages = [
 const stageIndex = (stage) => stages.findIndex((s) => s.key === stage);
 
 const nextStageLabel = computed(() => {
-  const idx = stageIndex(txn.value?.stage);
-  return stages[idx + 1]?.label ?? "";
-});
+  const idx = stageIndex(txn.value?.stage)
+  return stages[idx + 1]?.label ?? ''
+})
 
 const stageLoading = ref(false);
 
 const handleNextStage = async () => {
   const idx = stageIndex(txn.value.stage)
   const nextStage = stages[idx + 1]?.key
+  const nextLabel = stages[idx + 1]?.label
   if (!nextStage) return
   stageLoading.value = true
   try {
     await store.updateStage(route.params.id, nextStage)
-    success(`${nextStageLabel.value} aşamasına geçildi`)
+    success(`${nextLabel} aşamasına geçildi`)
   } catch (e) {
     toastError('Aşama güncellenemedi')
   } finally {

@@ -75,7 +75,6 @@ definePageMeta({ layout: false })
 
 const router = useRouter()
 const config = useRuntimeConfig()
-const { success: toastSuccess, error: toastError } = useToast()
 
 const form = reactive({
   name: '',
@@ -98,13 +97,11 @@ const handleRegister = async () => {
       method: 'POST',
       body: form,
     })
-    toastSuccess('Kayıt başarılı! Giriş yapabilirsiniz.')
     successMsg.value = 'Kayıt başarılı! Giriş yapabilirsiniz.'
     setTimeout(() => router.push('/login'), 2000)
   } catch (e) {
     const msg = e?.data?.message ?? 'Kayıt başarısız'
     const msgStr = Array.isArray(msg) ? msg[0] : msg
-    toastError(msgStr)
     errorMsg.value = msgStr
   } finally {
     loading.value = false
