@@ -228,6 +228,26 @@
               <p class="text-sm text-gray-500 mt-1">
                 {{ txn.listingAgent?.name }} → {{ txn.sellingAgent?.name }}
               </p>
+              <div class="flex items-center gap-2 mt-1">
+                <span
+                  v-if="txn.transactionType"
+                  :class="
+                    txn.transactionType === 'sale'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'bg-orange-100 text-orange-700'
+                  "
+                  class="text-xs px-2 py-0.5 rounded-full font-medium"
+                >
+                  {{ txn.transactionType === "sale" ? "Satış" : "Kiralama" }}
+                </span>
+                <span
+                  v-if="txn.propertyType"
+                  class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full font-medium"
+                >
+                  {{ propertyTypeLabel(txn.propertyType) }}
+                </span>
+                
+              </div>
               <p class="text-xs text-gray-400 mt-1">
                 Oluşturan: {{ txn.createdBy?.name ?? "Bilinmiyor" }}
               </p>
@@ -259,6 +279,13 @@ definePageMeta({ middleware: "auth" });
 const router = useRouter();
 const store = useTransactionsStore();
 const authStore = useAuthStore();
+const propertyTypeLabel = (type) => ({
+  house: '🏡 Ev',
+  apartment: '🏢 Daire',
+  land: '🌿 Arsa',
+  shop: '🏪 Dükkan',
+  office: '🏬 Ofis',
+})[type] ?? type
 
 onMounted(() => {
   authStore.loadFromStorage();

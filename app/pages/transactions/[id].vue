@@ -53,6 +53,25 @@
             {{ stageLabel(txn.stage) }}
           </span>
         </div>
+        <div v-if="txn.transactionType">
+          <p class="text-xs text-gray-400">İşlem Tipi</p>
+          <span
+            :class="
+              txn.transactionType === 'sale'
+                ? 'bg-blue-100 text-blue-700'
+                : 'bg-orange-100 text-orange-700'
+            "
+            class="text-xs px-2 py-1 rounded-full font-medium"
+          >
+            {{ txn.transactionType === "sale" ? "🏠 Satış" : "🔑 Kiralama" }}
+          </span>
+        </div>
+        <div v-if="txn.propertyType">
+          <p class="text-xs text-gray-400">Mülk Tipi</p>
+          <p class="font-semibold text-gray-800">
+            {{ propertyTypeLabel(txn.propertyType) }}
+          </p>
+        </div>
         <div v-if="txn.createdBy" class="col-span-2">
           <p class="text-xs text-gray-400">Oluşturan</p>
           <p class="font-semibold text-gray-800">{{ txn.createdBy?.name }}</p>
@@ -310,6 +329,13 @@ const router = useRouter();
 const store = useTransactionsStore();
 const agentsStore = useAgentsStore();
 const { success, error: toastError } = useToast();
+const propertyTypeLabel = (type) => ({
+  house: '🏡 Ev',
+  apartment: '🏢 Daire',
+  land: '🌿 Arsa',
+  shop: '🏪 Dükkan',
+  office: '🏬 Ofis',
+})[type] ?? type
 definePageMeta({ ssr: false });
 
 onMounted(() => {
