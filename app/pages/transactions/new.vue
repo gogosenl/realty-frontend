@@ -117,15 +117,13 @@
                 }}
               </label>
               <input
-                v-model.number="form.salePrice"
-                type="number"
-                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
-                :placeholder="
-                  form.transactionType === 'rent' ? '10000' : '2000000'
-                "
-                required
-                @input="recalculateFee"
-              />
+  :value="formatNumber(form.salePrice)"
+  @input="form.salePrice = parseNumber($event.target.value)"
+  type="text"
+  class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
+  :placeholder="form.transactionType === 'rent' ? '10.000' : '2.000.000'"
+  required
+/>
             </div>
 
             <!-- Kiralama Komisyon -->
@@ -327,6 +325,15 @@ const router = useRouter();
 const agentsStore = useAgentsStore();
 const transactionsStore = useTransactionsStore();
 const { success, error: toastError } = useToast();
+const formatNumber = (val) => {
+  if (!val) return ''
+  return new Intl.NumberFormat('tr-TR').format(val)
+}
+
+const parseNumber = (val) => {
+  if (!val) return null
+  return Number(val.replace(/\./g, '').replace(',', '.'))
+}
 
 onMounted(() => agentsStore.fetchAgents());
 
